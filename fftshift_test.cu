@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
 
 	char out_window[] = "Result";
 	float *dev_mat, *dev_out;
-	float out[512*512], in[512*512];
+	float out[512*512], *in;
 	int N = 512;
 
 	cv::Mat img = cv::Mat::zeros(512,512, CV_32FC1);
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
          		8 );
 
 	if (img.isContinuous())
-    	in = img.data;
+    	in = (float *) img.data;
 
     cudaMalloc((void **) &dev_mat, 512*512*sizeof(float));
     cudaMalloc((void **) &dev_out, 512*512*sizeof(float));
