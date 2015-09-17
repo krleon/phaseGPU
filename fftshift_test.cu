@@ -1,7 +1,7 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-__global__ void fftshift(float *out, float* in, N) {
+__global__ void fftshift(float *out, float* in, int N) {
 
 	int i = threadIdx.x + blockIdx.x*blockDim.x
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
@@ -32,27 +32,28 @@ int main(int argc, char **argv) {
 
 	char out_window[] = "Result";
 	float *dev_mat, *dev_out;
-	float out[512*512];
+	float out[512*512], in[512*512];
+	int N = 512;
 
-	cv::Mat img = Mat::zeros(512,512, CV_32FC1);
+	cv::Mat img = cv::Mat::zeros(512,512, CV_32FC1);
 	cv::Point center = cv::Point(256,256);
 	cv::circle( img, 
 			    center, 
 		    	60,
-            	Scalar( 255 ),
+            	cv::Scalar( 255 ),
          		-1,
          		8 );
 
 	if (img.isContinuous())
-    	array = mat.data;
+    	in = mat.data;
 
     cudaMalloc((void **) &dev_mat, 512*512*sizeof(float));
     cudaMalloc((void **) &dev_out, 512*512*sizeof(float));
     cudaMemcpy(dev_mat, array, 512*512*sizeof(float),cudaMemcpyHostToDevice);
 
     dim3 dimGrid (int((N-0.5)/64) + 1, int((N-0.5)/64) + 1);
-	dim3 dimBlock (BSZ, BSZ);
-    fftshift<<dimGrid, dimBlock>>>(dev_out, dev_mat, 512);
+	dim3 dimBlock (64, 64);
+    fftshift<<<dimGrid, dimBlock>>>(dev_out, dev_mat, 512);
 
     cudaMemcpy(out, dev_out, 512*512*sizeof(float), cudaMemcpyDeviceToHost);
 
