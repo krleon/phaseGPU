@@ -3,7 +3,7 @@
 
 __global__ void fftshift(float *out, float* in, int N) {
 
-	int i = threadIdx.x + blockIdx.x*blockDim.x
+	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
 	int index = j*N + i;
 
@@ -45,11 +45,11 @@ int main(int argc, char **argv) {
          		8 );
 
 	if (img.isContinuous())
-    	in = mat.data;
+    	in = img.data;
 
     cudaMalloc((void **) &dev_mat, 512*512*sizeof(float));
     cudaMalloc((void **) &dev_out, 512*512*sizeof(float));
-    cudaMemcpy(dev_mat, array, 512*512*sizeof(float),cudaMemcpyHostToDevice);
+    cudaMemcpy(dev_mat, in, 512*512*sizeof(float),cudaMemcpyHostToDevice);
 
     dim3 dimGrid (int((N-0.5)/64) + 1, int((N-0.5)/64) + 1);
 	dim3 dimBlock (64, 64);
