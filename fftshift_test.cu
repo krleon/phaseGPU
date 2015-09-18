@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
 	float out[512*512], *in;
 	int N = 512;
 
+    
 	cv::Mat img = cv::Mat::zeros(512,512, CV_32FC1);
 	cv::Point center = cv::Point(256,256);
 	cv::circle( img, 
@@ -55,8 +56,8 @@ int main(int argc, char **argv) {
     CUDA_CALL(cudaMalloc((void **) &dev_out, 512*512*sizeof(float)));
     CUDA_CALL(cudaMemcpy(dev_mat, in, 512*512*sizeof(float),cudaMemcpyHostToDevice));
 
-    dim3 dimGrid (int((N-0.5)/64) + 1, int((N-0.5)/64) + 1);
-	dim3 dimBlock (64, 64);
+    dim3 dimGrid (int((N-0.5)/32) + 1, int((N-0.5)/32) + 1);
+	dim3 dimBlock (32, 32);
     fftshift<<<dimGrid, dimBlock>>>(dev_out, dev_mat, 512);
 
     CUDA_CALL(cudaMemcpy(out, dev_out, 512*512*sizeof(float), cudaMemcpyDeviceToHost));
