@@ -14,12 +14,12 @@ __global__ void fftshift(float *out, float* in, int N) {
 		if (i < N/2)  {
 			if (j < N/2) {   //Q1
 				out[index] = in[index + eq1];
-			} else {		 //Q2
-				out[index] = in[index + eq2];
+			} else {		 //Q3
+				out[index] = in[index - eq2];
 			}
 		} else {
-			if (j < N/2) {   //Q3
-				out[index] = in[index - eq2];
+			if (j < N/2) {   //Q2
+				out[index] = in[index + eq2];
 			} else {		 //Q4
 				out[index] = in[index - eq1];
 			}
