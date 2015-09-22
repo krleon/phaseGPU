@@ -1,13 +1,15 @@
 #include <stdio.h>
-#include "fftshift.h"
+#include "cuda_funcs.h"
 
-__global__ void fftshift(float *out, float* in, int N) {
+__global__ void fftshift_kernel(float *out, float* in, int N, int NZ) {
 
 	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
-	int index = j*N + i;
+	int k = threadIdx.z + blockIdx.z*blockDim.z;
 
-	if (i < N && j < N) {
+	int index = k*N*N + j*N + i;
+
+	if (i < N && j < N && k < NZ) {
 		int eq1 = (N*N + N)/2;
 		int eq2 = (N*N - N)/2;
 
@@ -28,10 +30,10 @@ __global__ void fftshift(float *out, float* in, int N) {
 
 }
 
-void fftshift(float *out, float *in, int N) {
+void fftshift(float *out, float *in, int N, int NZ) {
 
-	dim3 dimGrid (int((N-0.5)/BSZ) + 1, int((N-0.5)/BSZ) + 1);
-	dim3 dimBlock (BSZ, BSZ);
-    fftshift<<<dimGrid, dimBlock>>>(out, in, N);
+	dim3 dimGrid (int((N-0.5)/BSZ) + 1, int((N-0.5)/BSZ) + 1, NZ);
+	dim3 dimBlock (BSZ, BSZ, 1);
+    fftshift_kernel<<<dimGrid, dimBlock>>>(out, in, N, NZ);
 	
 }

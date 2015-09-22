@@ -16,34 +16,6 @@
     printf("Error at %s:%d\n",__FILE__,__LINE__);\
     return EXIT_FAILURE;}} while(0)
 
-__global__ void fftshift(float *out, float* in, N) {
-
-	int i = threadIdx.x + blockIdx.x*blockDim.x
-	int j = threadIdx.y + blockIdx.y*blockDim.y;
-	int k = threadIdx.z + blockIdx.z*blockDim.z;
-	int index = k*N*N + j*N + i;
-
-	if (i < N && j < N && k < BATCH) {
-		int eq1 = (N*N + N)/2;
-		int eq2 = (N*N - N)/2;
-
-		if (i < N/2)  {
-			if (j < N/2) {   //Q1
-				out[index] = in[index + eq1];
-			} else {		 //Q2
-				out[index] = in[index + eq2];
-			}
-		} else {
-			if (j < N/2) {   //Q3
-				out[index] = in[index - eq2];
-			} else {		 //Q4
-				out[index] = in[index - eq1];
-			}
-		}
-	}
-
-}
-
 /* Need to try two different methods: 1) calculating PSD ahead of time and copying it to GPU, or 
    calculating it each time on the GPU
 */
