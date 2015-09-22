@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 
     CUDA_CALL(cudaMemcpy(out, dev_out, N*N*NZ*sizeof(float), cudaMemcpyDeviceToHost));
 
-    cv::Mat shifted = cv::Mat(N, N*NZ, CV_32FC1, &out);
+    cv::Mat shifted = cv::Mat(N*NZ, N, CV_32FC1, &out);
     cv::imshow(in_window, img);
     cv::imshow(out_window, shifted);
     cv::waitKey(0);
