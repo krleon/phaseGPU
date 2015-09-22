@@ -7,16 +7,16 @@
 
 int main(int argc, char **argv) {
 
-	char in_window[] = "Initial"
+	char in_window[] = "Initial";
 	char out_window[] = "Result";
 	float *dev_mat, *dev_out;
 	int N = 512;
 	int NZ = 2;
 	float out[N*N*NZ], *in;
 	
-	cv::Mat img = cv::Mat::zeros(N,NZ*N, CV_32FC1);
+	cv::Mat img = cv::Mat::zeros(N*NZ, N, CV_32FC1);
 	cv::Point center = cv::Point(N/2,N/2);
-	cv::Point center2 = cv::Point(N/2,N + N/2);
+	cv::Point center2 = cv::Point(N/2, N + N/2);
 	cv::circle( img, 
 			    center, 
 		    	N/2,
@@ -43,7 +43,7 @@ int main(int argc, char **argv) {
     CUDA_CALL(cudaMemcpy(out, dev_out, N*N*NZ*sizeof(float), cudaMemcpyDeviceToHost));
 
     cv::Mat shifted = cv::Mat(N, N*NZ, CV_32FC1, &out);
-    cv::imshow(in_window, in);
+    cv::imshow(in_window, img);
     cv::imshow(out_window, shifted);
     cv::waitKey(0);
     cv::destroyAllWindows();
