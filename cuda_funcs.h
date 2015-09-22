@@ -10,11 +10,11 @@
     printf("Error at %s:%d\n",__FILE__,__LINE__);\
     return EXIT_FAILURE;}} while(0)
 
-typedef struct dataSize {
+typedef struct {
 	int x;
 	int y;
 	int z;
-};
+} dataSize;
 
 void fftshift(float*, float*, int, int);
 void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, dataSize);
