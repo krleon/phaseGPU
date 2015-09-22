@@ -7,6 +7,7 @@
 
 int main(int argc, char **argv) {
 
+	char in_window[] = "Initial"
 	char out_window[] = "Result";
 	float *dev_mat, *dev_out;
 	int N = 512;
@@ -42,6 +43,7 @@ int main(int argc, char **argv) {
     CUDA_CALL(cudaMemcpy(out, dev_out, N*N*NZ*sizeof(float), cudaMemcpyDeviceToHost));
 
     cv::Mat shifted = cv::Mat(N, N*NZ, CV_32FC1, &out);
+    cv::imshow(in_window, in);
     cv::imshow(out_window, shifted);
     cv::waitKey(0);
     cv::destroyAllWindows();
