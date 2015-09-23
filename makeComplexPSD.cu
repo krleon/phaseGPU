@@ -6,7 +6,7 @@
 */
 __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc, 
 							int NX, int NY, int NZ, float r0, float delta, float L0, float l0) {
-	
+	/
 	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
 	int k = threadIdx.z + blockIdx.z*blockDim.z;
@@ -21,8 +21,13 @@ __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc,
 		float f0 = 1.0/L0;
 		PSD_phi = 0.023*powf(r0,-5./3.)*expf(-powf((f/fm),2))/powf(powf(f,2) + powf(f0,2),11./6.);
 
-		fc[index].x = real[index]*sqrt(PSD_phi)/(NX*delta);
-		fc[index].y = imag[index]*sqrt(PSD_phi)/(NX*delta);
+		if (i == 256 && j == 256) {
+			fc[index].x = 0;
+			fc[index].y = 0;
+		} else {
+			fc[index].x = real[index]*sqrt(PSD_phi)/(NX*delta);
+			fc[index].y = imag[index]*sqrt(PSD_phi)/(NX*delta);
+		}
 	}
 }
 
