@@ -17,7 +17,7 @@ __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc,
 		float fx = (i - NX/2.)/(NX*delta);
 		float fy = (j - NY/2.)/(NY*delta);
 		float f = sqrt(powf(fx,2) + powf(fy,2));
-		float fm = 5.92/10.0/(2.0*PI);
+		float fm = 5.92/l0/(2.0*PI);
 		float f0 = 1.0/L0;
 		PSD_phi = 0.023*powf(r0,-5./3.)*expf(-powf((f/fm),2))/powf(powf(f,2) + powf(f0,2),11./6.);
 
