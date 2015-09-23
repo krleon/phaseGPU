@@ -51,7 +51,7 @@ int main() {
 	getComplexReal(real_data, data, size, 1);
 
 	// Next Check: Output the matrix here and look at the distribution.
-	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y.size.z*sizeof(float), cudaMemcpyDeviceToHost));
+	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
 	cv::Mat outMat = cv::Mat(size.x*size.z, size.y, CV_32FC1, &out);
 	cv::Scalar mean, std;
 	cv::meanStdDev(outMat, mean, std);
@@ -90,7 +90,7 @@ int main() {
 */
 
 	/* Destroy the CUFFT plan */
-	cufftDestroy(plan);
+	//cufftDestroy(plan);
 	cudaFree(data);
 	//cudaFree(real_data);
 
