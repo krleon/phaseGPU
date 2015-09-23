@@ -1,6 +1,7 @@
 #include <cufft.h>
 #include <curand.h>
 #include <math.h>
+#include <stdio.h>
 #include "cuda_funcs.h"
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
