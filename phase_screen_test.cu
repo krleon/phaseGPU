@@ -17,7 +17,7 @@ int main() {
 	float D = 2.0;
 	float r0 = 0.1;
 	float L0 = 100;
-	float l0 = 0.01;
+	//float l0 = 0.01;
 
 	dataSize size;   //Might want to set up constructor and volume elem
 	size.x = 512;

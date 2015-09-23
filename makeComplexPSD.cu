@@ -16,9 +16,9 @@ __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc,
 		float PSD_phi;
 		float fx = (i - NX/2.)/(NX*delta);
 		float fy = (j - NY/2.)/(NY*delta);
-		float f = sqrt(powf(fx,2) + powf(fy,2))
-		float fm = 5.92/10/(2*PI);
-		float f0 = 1/L0
+		float f = sqrt(powf(fx,2) + powf(fy,2));
+		float fm = 5.92/10.0/(2.0*PI);
+		float f0 = 1.0/L0;
 		PSD_phi = 0.023*powf(r0,-5./3.)*expf(-powf((f/fm),2))/(powf(f,2) + powf(f0,2));
 		PSD_phi = pow(PSD_phi,11./6.);
 
@@ -29,7 +29,7 @@ __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc,
 
 void makeComplexPSD(float *real, float *imag, cufftComplex *fc, 
 					float r0, float delta, float L0, dataSize size) {
-	dim3 dimGrid (int((size.x-0.5)/BSZ) + 1, int((size.y-0.5)/BSZ) + 1, size.z;
+	dim3 dimGrid (int((size.x-0.5)/BSZ) + 1, int((size.y-0.5)/BSZ) + 1, size.z);
 	dim3 dimBlock (BSZ, BSZ, 1);
 	// Need to make complex numbers here
 	makeComplexPSD<<<dimGrid, dimBlock>>>(real, imag, fc, size.x, size.y, size.z, r0, delta, L0);
