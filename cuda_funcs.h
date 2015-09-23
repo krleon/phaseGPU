@@ -2,6 +2,7 @@
 #include <curand.h>
 
 #define BSZ 32
+#define PI 3.14159265358979323846
 
 #define CUDA_CALL(x) do { if((x)!=cudaSuccess) { \
     printf("Error at %s:%d\n",__FILE__,__LINE__);\

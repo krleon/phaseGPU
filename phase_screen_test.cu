@@ -6,8 +6,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#define PI 3.14159265358979323846
-
 //512 x 512 x 1000 in 32-bit floats => 1.05GB => 2.1GB "complex"
 // my device has 1GB of memory, roughly 512 x 512 x 1000 x 32 bit
 // will try 250 at a time first
