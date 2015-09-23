@@ -14,7 +14,7 @@ __global__ void getComplexAbs(float *out, cufftComplex *in,
 
 	if (i < NX && j < NY && k < NZ) {
 		
-		out[index] = sqrt(pow(in[index].x,2) + pow(in[index].y,2));
+		out[index] = sqrt(powf(in[index].x,2) + powf(in[index].y,2));
 	}
 }
 

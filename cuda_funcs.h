@@ -19,5 +19,5 @@ typedef struct {
 } dataSize;
 
 void fftshift(cufftComplex*, cufftComplex*, int, int);
-void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, dataSize);
+void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, float, dataSize);
 void getComplexAbs(float*, cufftComplex*, dataSize);

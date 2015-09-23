@@ -15,7 +15,7 @@ int main() {
 	float D = 2.0;
 	float r0 = 0.1;
 	float L0 = 100;
-	//float l0 = 0.01;
+	float l0 = 0.01;
 
 	dataSize size;   //Might want to set up constructor and volume elem
 	size.x = 512;
@@ -47,7 +47,7 @@ int main() {
 	CURAND_CALL(curandGenerateNormal(gen, imag_data, size.x*size.y*size.z, 0.0, 1.0));
 
 	// Need to make complex numbers here
-	makeComplexPSD(real_data, imag_data, data, r0, delta, L0, size);
+	makeComplexPSD(real_data, imag_data, data, r0, delta, L0, l0, size);
 	CUDA_CALL(cudaFree(real_data));
 	CUDA_CALL(cudaFree(imag_data));
 	CUDA_CALL(cudaMalloc((void**)&shift_out, sizeof(cufftComplex)*size.x*size.y*size.z));
