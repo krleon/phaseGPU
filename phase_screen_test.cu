@@ -62,7 +62,7 @@ int main() {
 	fftshift(data, shift_out, size.x, size.z);
 	CUDA_CALL(cudaFree(shift_out));
 	CUDA_CALL(cudaMalloc((void**)&real_data, sizeof(float)*size.x*size.y*size.z));
-	getComplexAbs(real_data, data, size);
+	getComplexReal(real_data, data, size, powf(size.x,2));
 
 	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
 
