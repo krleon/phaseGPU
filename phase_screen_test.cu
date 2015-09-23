@@ -56,7 +56,8 @@ int main() {
 
 	//2^a x 3^b is most efficient size
 	/* Create a 2D plan */
-	cufftPlan2d(&plan, size.x, size.y, CUFFT_C2C, size.z);
+	//Need advanced data layout to do batch in 2D using cufftPlanMany
+	cufftPlan2d(&plan, size.x, size.y, CUFFT_C2C);
 	cufftExecC2C(plan, shift_out, shift_out, CUFFT_INVERSE);
 	
 	fftshift(data, shift_out, size.x, size.z);
