@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "cuda_funcs.h"
 
-__global__ void fftshift_kernel(float *out, float* in, int N, int NZ) {
+__global__ void fftshift_kernel(cufftComplex *out, cufftComplex* in, int N, int NZ) {
 
 	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
@@ -30,7 +30,7 @@ __global__ void fftshift_kernel(float *out, float* in, int N, int NZ) {
 
 }
 
-void fftshift(float *out, float *in, int N, int NZ) {
+void fftshift(cufftComplex *out, cufftComplex *in, int N, int NZ) {
 
 	dim3 dimGrid (int((N-0.5)/BSZ) + 1, int((N-0.5)/BSZ) + 1, NZ);
 	dim3 dimBlock (BSZ, BSZ, 1);

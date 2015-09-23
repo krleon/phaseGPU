@@ -1,4 +1,5 @@
 #include <cufft.h>
+#include <curand.h>
 
 #define BSZ 32
 
@@ -16,6 +17,6 @@ typedef struct {
 	int z;
 } dataSize;
 
-void fftshift(float*, float*, int, int);
+void fftshift(cufftComplex*, cufftComplex*, int, int);
 void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, dataSize);
 void getComplexAbs(float*, cufftComplex*, dataSize);
