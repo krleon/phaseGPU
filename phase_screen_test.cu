@@ -2,6 +2,8 @@
 #include <cufft.h>
 #include <curand.h>
 #include <math.h>
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 #define PI 3.14159265358979323846
 
@@ -16,10 +18,13 @@ int main() {
 	float L0 = 100;
 	float l0 = 0.01;
 
-	dataSize size;
+	dataSize size;   //Might want to set up constructor and volume elem
 	size.x = 512;
 	size.y = 512;
-	size.z = 250;
+	size.z = 1;
+
+	char out_window[] = "Result";
+	float out[size.x*size.y*size.z];
 
 	float delta = D/size.x;
 
@@ -55,10 +60,25 @@ int main() {
 	cufftExecC2C(plan, shift_out, shift_out, CUFFT_INVERSE);
 	
 	fftshift(data, shift_out, size.x, size.z);
+	CUDA_CALL(cudaFree(shift_out));
+	CUDA_CALL(cudaMalloc((void**)&real_data, sizeof(float)*size.x*size.y*size.z));
+	getComplexAbs(real_data, data, size);
+
+	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
+
+	cv::Mat screen = cv::Mat(size.x*size.z, size.y, CV_32FC1, &out);
+    cv::imshow(out_window, screen);
+    cv::waitKey(0);
+
+    double min, max;
+	cv::minMaxLoc(screen, &min, &max);
+	printf("Min: %f\nMax: %f \n", min, max);
+
+	cv::destoyAllWindows();
 
 	/* Destroy the CUFFT plan */
 	cufftDestroy(plan);
 	cudaFree(data);
-	cudaFree(shift_out);
+	cudaFree(real_data);
 
 }

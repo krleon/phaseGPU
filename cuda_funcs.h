@@ -18,3 +18,4 @@ typedef struct {
 
 void fftshift(float*, float*, int, int);
 void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, dataSize);
+void getComplexAbs(float*, cufftComplex*, dataSize);
