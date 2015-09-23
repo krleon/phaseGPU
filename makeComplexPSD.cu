@@ -6,7 +6,7 @@
 */
 __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc, 
 							int NX, int NY, int NZ, float r0, float delta, float L0, float l0) {
-	/
+	
 	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
 	int k = threadIdx.z + blockIdx.z*blockDim.z;
