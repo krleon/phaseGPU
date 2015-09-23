@@ -20,7 +20,7 @@ __global__ void getComplexAbs(float *out, cufftComplex *in,
 
 void getComplexAbs(float *out, cufftComplex *in, dataSize size) {
 
-	dim3 dimGrid (int((size.x-0.5)/BSZ) + 1, int((size.y-0.5)/BSZ) + 1, size.z;
+	dim3 dimGrid (int((size.x-0.5)/BSZ) + 1, int((size.y-0.5)/BSZ) + 1, size.z);
 	dim3 dimBlock (BSZ, BSZ, 1);
 	// Need to make complex numbers here
 	getComplexAbs<<<dimGrid, dimBlock>>>(out, in, size.x, size.y, size.z);
