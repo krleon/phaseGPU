@@ -44,8 +44,8 @@ int main() {
 	CURAND_CALL(curandSetPseudoRandomGeneratorSeed(gen, 1234ULL));
 
 	/* Generate real and imag normally random distributed numbers */
-	CURAND_CALL(curandGenerateNormal(gen, real_data, size.x*size.y*size.z, 0.0, 1.0);
-	CURAND_CALL(curandGenerateNormal(gen, imag_data, size.x*size.y*size.z, 0.0, 1.0);
+	CURAND_CALL(curandGenerateNormal(gen, real_data, size.x*size.y*size.z, 0.0, 1.0));
+	CURAND_CALL(curandGenerateNormal(gen, imag_data, size.x*size.y*size.z, 0.0, 1.0));
 
 	// Need to make complex numbers here
 	makeComplexPSD(real_data, imag_data, data, r0, delta, L0, size);
