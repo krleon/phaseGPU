@@ -48,20 +48,19 @@ int main() {
 
 	// Need to make complex numbers here
 	makeComplexPSD(real_data, imag_data, data, r0, delta, L0, l0, size);
-	getComplexReal(real_data, data, size, 1);
+	//getComplexReal(real_data, data, size, 1);
 
 	// Next Check: Output the matrix here and look at the distribution.
-	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
-	cv::Mat outMat = cv::Mat(size.x*size.z, size.y, CV_32FC1, &out);
-	cv::Scalar mean, std;
-	cv::meanStdDev(outMat, mean, std);
-	printf("Mean: %f\n", mean[0]);
-	printf("STDev: %f\n", std[0]);
+	//CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
+	//cv::Mat outMat = cv::Mat(size.x*size.z, size.y, CV_32FC1, &out);
+	//cv::Scalar mean, std;
+	//cv::meanStdDev(outMat, mean, std);
+	//printf("Mean: %f\n", mean[0]);
+	//printf("STDev: %f\n", std[0]);
 
 	CUDA_CALL(cudaFree(real_data));
 	CUDA_CALL(cudaFree(imag_data));
 
-	/*
 	CUDA_CALL(cudaMalloc((void**)&shift_out, sizeof(cufftComplex)*size.x*size.y*size.z));
 	fftshift(shift_out, data, size.x, size.z);
 
@@ -87,11 +86,10 @@ int main() {
 	printf("Min: %f\nMax: %f \n", min, max);
 
 	cv::destroyAllWindows();
-*/
 
 	/* Destroy the CUFFT plan */
-	//cufftDestroy(plan);
+	cufftDestroy(plan);
 	cudaFree(data);
-	//cudaFree(real_data);
+	cudaFree(real_data);
 
 }
