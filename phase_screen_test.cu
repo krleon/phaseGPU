@@ -20,8 +20,8 @@ int main() {
 	float l0 = 0.01;
 
 	dataSize size;   //Might want to set up constructor and volume elem
-	size.x = 512;
-	size.y = 512;
+	size.x = 256;
+	size.y = 256;
 	size.z = 2;
 
 	char out_window[] = "Result";
