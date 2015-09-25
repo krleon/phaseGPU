@@ -21,7 +21,7 @@ __global__ void makeComplexPSD(float *real, float* imag, cufftComplex *fc,
 		float f0 = 1.0/L0;
 		PSD_phi = 0.023*powf(r0,-5./3.)*expf(-powf((f/fm),2))/powf(powf(f,2) + powf(f0,2),11./6.);
 
-		if (i == 256 && j == 256) {
+		if (i == NX/2 && j == NX/2) {
 			fc[index].x = 0;
 			fc[index].y = 0;
 		} else {
