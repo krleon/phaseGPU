@@ -22,7 +22,7 @@ int main() {
 	dataSize size;   //Might want to set up constructor and volume elem
 	size.x = 512;
 	size.y = 512;
-	size.z = 1;
+	size.z = 2;
 
 	char out_window[] = "Result";
 	float out[size.x*size.y*size.z];
@@ -71,13 +71,15 @@ int main() {
 	//2^a x 3^b is most efficient size
 	// Create a 2D plan 
 	//Need advanced data layout to do batch in 2D using cufftPlanMany
-	cufftPlan2d(&plan, size.x, size.y, CUFFT_C2C);
+	int n[2] = {size.y, size.x};
+	int inembed[2] = {size.x*size.y, size.x};
+	cufftPlanMany(&plan, 2, n, inembed, 1, inembed[0], inembed, 1, inembed[0], CUFFT_C2C, size.z);
 	cufftExecC2C(plan, shift_out, shift_out, CUFFT_INVERSE);
 	
 	fftshift(data, shift_out, size.x, size.z);
 	CUDA_CALL(cudaFree(shift_out));
 	CUDA_CALL(cudaMalloc((void**)&real_data, sizeof(float)*size.x*size.y*size.z));
-	getComplexReal(real_data, data, size, powf(size.x,2));
+	getComplexReal(real_data, data, size, 1);
 
 	CUDA_CALL(cudaMemcpy(out, real_data, size.x*size.y*size.z*sizeof(float), cudaMemcpyDeviceToHost));
 
