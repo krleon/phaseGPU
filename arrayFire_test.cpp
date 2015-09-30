@@ -5,8 +5,11 @@
 af::array getPSDArray(float D, float r0, float L0, float l0, int N) {
 
 	af::array b = af::array(af::seq(-N/2,N/2-1))/D;
-	af::array x = af::tile(b,1,N);
-	af::array y = af::tile(b.T(),N,1);
+	af::array y = af::tile(b,1,N);
+	af::array x = af::tile(b.T(),N,1);
+
+	//af::print("x",x(af::seq(0,9)),0);
+	//af::print("y",y(0,af::seq(0,9)));
 
 	af::array f = af::sqrt(af::pow(x,2) + af::pow(y,2));
 
@@ -21,37 +24,57 @@ af::array getPSDArray(float D, float r0, float L0, float l0, int N) {
 
 int main(void) {
 
-	int N = 256;
+	int N = 4096;
 	
 	float D = 2.0;
 	float r0 = 0.1;
 	float L0 = 100;
 	float l0 = 0.01;
 
-	af::array PSD_phi = getPSDArray(D, r0, L0, l0, N)
+	af::setDevice(0);
+	af::info();
 
+	af::array PSD_phi = getPSDArray(D, r0, L0, l0, N);
+	PSD_phi(N/2,N/2) = 0.0;
+
+	af::array out;
+
+	gfor (af::seq i, 10) {
 	af::array a = af::randn(N, N)*af::sqrt(PSD_phi)/D;
 	af::array b = af::randn(N, N)*af::sqrt(PSD_phi)/D;
-
+	//af::array a = af::randn(2,2);
+	//af::array b = af::randn(2,2);
+	
+	
 	af::array c = af::complex(a,b);
 
 	//shift
-	af::shift(c, c.dims(0)/2, c.dims(1)/2);
-	//fft
-	fft2InPlace(c);
+	af::array shift_out = af::shift(c, (c.dims(0)+1)/2, (c.dims(1)+1)/2);
+	//ifft
+	ifft2InPlace(shift_out);
 	//shift
-	af::shift(c, c.dims(0)/2, c.dims(1)/2);
+	c = af::shift(shift_out, (shift_out.dims(0)+1)/2, (shift_out.dims(1)+1)/2);
 	//get real
-	af::array out = af::real)(c);
-
+	
+	out = af::real(c)*N*N;
+}
 	//show
 	
 	//print min/max
-	printf("Minimum Val: %f\n", af::min(out));
-	printf("Maximum Val: %f\n", af::max(out));
+	float minVal = af::min<float>(out);
+	float maxVal = af::max<float>(out);
+	printf("Minimum Val: %f\n", minVal);
+	printf("Maximum Val: %f\n", maxVal);
 
 	af::Window wnd(N, N, "Phase Screen");
-    wnd.image(out);
+	//wnd.setColorMap(AF_COLORMAP_SPECTRUM);
+   	//af::print("out",(out-minVal)/(maxVal-minVal));
+	af::array out2 = (out-minVal)/(maxVal-minVal);
 
+	af::print("out",out(1,af::seq(1,10)),10);
+	while(!wnd.close()) {
+		wnd.image(out2);
+		wnd.show();
+	}
     return 0;
 }

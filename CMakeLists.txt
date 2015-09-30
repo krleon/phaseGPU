@@ -6,4 +6,4 @@ FIND_PACKAGE(ArrayFire)
 INCLUDE_DIRECTORIES(${ArrayFire_INCLUDE_DIRS})
 
 ADD_EXECUTABLE(ArrayFireTest arrayFire_test.cpp)
-TARGET_LINK_LIBRARIES(ArrayFireTest ${ArrayFire_LIBRARIES})
+TARGET_LINK_LIBRARIES(ArrayFireTest ${ArrayFire_CUDA_LIBRARIES} dl)
