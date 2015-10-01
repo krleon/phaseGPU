@@ -59,7 +59,7 @@ af::array calculateStrutureFn(af::array ph, af::array mask, float delta) {
 	float delta_f = 1/(ph.dims(0)*delta);
 	af::array w2 = ift2(W*af::conjg(W), delta_f);
 
-	return (mask*2*ift2(af::real(S*conjg(W)) - af::pow(af::abs(P)), delta_f) / w2);
+	return (mask*2*ift2(af::real(S*conjg(W)) - af::pow(af::abs(P),2), delta_f) / w2);
 
 }
 
