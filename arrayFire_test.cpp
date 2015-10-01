@@ -43,11 +43,11 @@ af::array getRandom(int NX, int NY, int NZ) {
 int main(void) {
 
 	int N = 512;
-	int num_screens = 100;
+	int num_screens = 40;
 	
 	float D = 2.0;
 	float r0 = 0.1;
-	float L0 = 100;
+	float L0 = 40;
 	float l0 = 0.01;
 
 	af::setDevice(0);
@@ -61,19 +61,19 @@ int main(void) {
 	af::array out(N,N,num_screens);
 
 	gfor (af::seq i, num_screens) {
-		out(span,span,i) = af::real(ift2(c(span,span,i)))*N*N;	
+		out(af::span,af::span,i) = af::real(ift2(c(af::span,af::span,i)))*N*N;	
 	}
 	
 	//print min/max
-	float minVal = af::min<float>(out(span,span,0));
-	float maxVal = af::max<float>(out(span,span,0));
+	float minVal = af::min<float>(out(af::span,af::span,0));
+	float maxVal = af::max<float>(out(af::span,af::span,0));
 	printf("Minimum Val: %f\n", minVal);
 	printf("Maximum Val: %f\n", maxVal);
 
 	af::Window wnd(N, N, "Phase Screen");
 	//wnd.setColorMap(AF_COLORMAP_SPECTRUM);
    	//af::print("out",(out-minVal)/(maxVal-minVal));
-	af::array out2 = (out(span,span,0)-minVal)/(maxVal-minVal);
+	af::array out2 = (out(af::span,af::span,0)-minVal)/(maxVal-minVal);
 
 	while(!wnd.close()) {
 		wnd.image(out2);
