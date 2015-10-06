@@ -1,5 +1,6 @@
 #include <cufft.h>
 #include <curand.h>
+#include "arrayfire.h"
 
 #define BSZ 32
 #define PI 3.14159265358979323846
@@ -22,3 +23,5 @@ void fftshift(cufftComplex*, cufftComplex*, int, int);
 void makeComplexPSD(float*, float*, cufftComplex*, float, float, float, float, dataSize);
 void getComplexAbs(float*, cufftComplex*, dataSize);
 void getComplexReal(float*, cufftComplex*, dataSize, float);
+af::array subtract2DMean(float *out, dataSize size); 
+void getSubHarmonic(cufftComplex *out, float *d_fx, float *d_fy, float *d_SH_PSD, float *seeds, float delta, int N, int NZ);
