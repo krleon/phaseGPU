@@ -21,14 +21,14 @@ void getSH_PSD(float D, float l0, float L0, float r0, float* PSD_phi, float* fx,
 
 	for (int ii = 0; ii < 3; ii++) {
 		del_f = 1./(powf(3.0,ii+1)*D);
-		for (int jj = 0: jj < 9; jj++) {
+		for (int jj = 0; jj < 9; jj++) {
 			fx[ii*9+jj] = x_vals[jj]*del_f;
 			fy[ii*9+jj] = y_vals[jj]*del_f;
 			f[jj] = sqrt(powf(fx[ii*9+jj],2) + powf(fy[ii*9+jj],2));
 			if (jj == 4) 
 				PSD_phi[ii*9+jj] = 0;
 			else
-				PSD_phi[ii*9+jj] = 0.023*powf(r0,-5./3.)*exp(-powf(f[jj]/fm,2)/powf(powf(f[jj],2)+powf(f0,2),11./6.);
+				PSD_phi[ii*9+jj] = 0.023*powf(r0,-5./3.)*exp(-powf(f[jj]/fm,2)/powf(powf(f[jj],2)+powf(f0,2),11./6.));
 		}
 	}
 }
@@ -78,7 +78,7 @@ int main() {
 
 	// Free up floatA and float B to make room for complexB
 	CUDA_CALL(cudaFree(d_floatA));
-	CUDA_CALL(cudaFree(d_flaotB));
+	CUDA_CALL(cudaFree(d_floatB));
 
 	// Create complexB now that there is room
 	CUDA_CALL(cudaMalloc((void**)&d_complexB, sizeof(cufftComplex)*size.x*size.y*size.z));
@@ -99,8 +99,8 @@ int main() {
 	//CUDA_CALL(cudaMemcpy(phz_hi, d_complexB, sizeof(cufftComplex)*size.x*size.y*size.z, cudaMemcpyDeviceToHost));
 	CUDA_CALL(cudaFree(d_complexA));
 	CUDA_CALL(cudaMalloc((void**)&d_floatA, sizeof(float)*size.x*size.y*size.z));
-	CUDA_CALL(cudaMalloc((void**)&d_flaotB, sizeof(float)*size.x*size.y*size.z));
-	getComplexReal(d_floatA, d_complexB);
+	CUDA_CALL(cudaMalloc((void**)&d_floatB, sizeof(float)*size.x*size.y*size.z));
+	getComplexReal(d_floatA, d_complexB, size, 1.0);
 	//CUDA_CALL(cudaFree(d_complexB));	
 
 	//CUDA_CALL(cudaMalloc((void**)&d_floatA, sizeof(float)*size.x*size.y*size.z));
@@ -119,20 +119,30 @@ int main() {
 	CUDA_CALL(cudaMemcpy(d_fy, fy, 27*sizeof(float), cudaMemcpyHostToDevice));
 	CUDA_CALL(cudaMemcpy(d_SH_PSD, SH_PSD, 27*sizeof(float), cudaMemcpyHostToDevice));
 
-	getSubHarmonic(d_complexB, d_fx, d_fy, SH_PSD, seed_data, delta, size.x, size.z);
+	getSubHarmonic(d_complexB, d_fx, d_fy, d_SH_PSD, d_seed_data, delta, size.x, size.z);
 	getComplexReal(d_floatB, d_complexB, size, 1);
 	CUDA_CALL(cudaFree(d_complexB));
 
+        
 	af::array phz_lo = subtract2DMean(d_floatB, size);
-	af::array phz(size.x, size.y, size.z, d_floatA, afdevice);
+	
+        af::array phz(size.x, size.y, size.z, d_floatA, afDevice);
 
+       
+	
+	printf("Dim 1: %lu, Dim 2: %lu, Dim 3: %lu \n", phz.dims(0), phz.dims(1), phz.dims(2));
+	printf("Dim 1: %lu, Dim 2: %lu, Dim 3: %lu \n", phz_lo.dims(0), phz_lo.dims(1), phz_lo.dims(2));
 	phz = phz + phz_lo;
-	float *out = phz.host<float>();
-	phz.unlock();
+	
+	float *d_out = phz.device<float>();
+        float out[size.x*size.y*size.z];
+	CUDA_CALL(cudaMemcpy(out, d_out, sizeof(float)*size.x*size.y*size.z, cudaMemcpyDeviceToHost));
+        phz.unlock();
 	phz_lo.unlock();
 
 	cv::Mat screen = cv::Mat(size.x, size.y, CV_32FC1, &out);
-    cv::imshow(out_window, screen);
+    	//cv::namedWindow(out_window);
+	cv::imshow(out_window, screen);
     cv::waitKey(0);
 
     double min, max;
@@ -144,7 +154,7 @@ int main() {
 	delete[] out;
 	/* Destroy the CUFFT plan */
 	cufftDestroy(plan);
-	CUDA_CALL(cudaFree(d_flaotA));
+	CUDA_CALL(cudaFree(d_floatA));
 	CUDA_CALL(cudaFree(d_floatB));
 	CUDA_CALL(cudaFree(d_seed_data));
 	CUDA_CALL(cudaFree(d_fx));

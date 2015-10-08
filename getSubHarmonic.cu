@@ -16,8 +16,8 @@ __global__ void getSubHarmonic_kernel(cufftComplex *out, float *fx, float *fy, f
 
 	if (i < N && j < N && k < NZ) {
 
-		float x = (i - NX/2.)*delta;
-		float y = (j - NY/2.)*delta;
+		float x = (i - N/2.)*delta;
+		float y = (j - N/2.)*delta;
 		
 		out[index].x = 0.0;
 		out[index].y = 0.0;
@@ -44,5 +44,5 @@ void getSubHarmonic(cufftComplex *out, float *d_fx, float *d_fy, float *d_SH_PSD
 
 	dim3 dimGrid (int((N-0.5)/BSZ) + 1, int((N-0.5)/BSZ) + 1, NZ);
 	dim3 dimBlock (BSZ, BSZ, 1);
-	getSubHarmonic_kernel<<<dimGrid, dimBlock>>>(d_fx, d_fy, d_SH_PSD, out);
+	getSubHarmonic_kernel<<<dimGrid, dimBlock>>>(out, d_fx, d_fy, d_SH_PSD, seeds, delta, N, NZ);
 }

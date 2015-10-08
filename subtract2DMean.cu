@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include "cuda_funcs.h"
-#incluce "arrayfire.h"
+#include "arrayfire.h"
 
-__global__ void subtract2DMean(float *phz_lo, float *meanVec, int N, int NZ) {
+__global__ void subtract2DMean_kernel(float *phz_lo, float *meanVec, int N, int NZ) {
 
 	int i = threadIdx.x + blockIdx.x*blockDim.x;
 	int j = threadIdx.y + blockIdx.y*blockDim.y;
@@ -31,5 +31,5 @@ af::array subtract2DMean(float *out, dataSize size) {
 	dim3 dimBlock (BSZ, BSZ, 1);
 	subtract2DMean_kernel<<<dimGrid, dimBlock>>>(d_phz_lo, d_meanVec, N, NZ);
 
-	return phz_lo;
+	return af::moddims(phz_lo, N, N, NZ);
 }
